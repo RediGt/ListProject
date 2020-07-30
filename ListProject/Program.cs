@@ -25,6 +25,12 @@ namespace ListProject
                     case "2":
                         DeleteString();
                         break;
+                    case "q":
+                    case "Q":
+                        break;
+                    default:
+                        Console.WriteLine("Incorrect input.\n");
+                        break;
                 }
                 PrintMenu();
             }
@@ -74,24 +80,12 @@ namespace ListProject
         }
 
         static void UserAction()
-        {
-            bool correctInput = false;
-
-            do
-            {              
+        {      
                 Console.WriteLine("\n1 - add menu string\n" +
                     "2 - delete menu string\n" +
                     "q - exit\n");
-                Console.WriteLine("Make your cnioce:");
+                Console.Write("Make your choice: ");
                 userChoice = Console.ReadLine();
-
-                if (userChoice == "1" || userChoice == "2" ||
-                    userChoice == "q" || userChoice == "Q")
-                    correctInput = true;
-                else
-                    Console.WriteLine("Incorrect input");
-            }
-            while (!correctInput);
         }
     }
 }
