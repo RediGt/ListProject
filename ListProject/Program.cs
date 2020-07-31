@@ -6,35 +6,32 @@ using System.Xml;
 namespace ListProject
 {
     class Program
-    {       
-        static int timesModified = 0;
-        static DateTime dtModified = new DateTime();
-        
+    {              
         static void Main(string[] args)
         {
-                       
+            int timesModified = 0;
+            DateTime dtModified = new DateTime();
             List<String> menu = new List<String>();
             string userChoice = null;
 
-            LoadMenu(menu);
+            LoadMenu(menu, ref timesModified, ref dtModified);
             //InitMenu(menu);
             PrintMenu(menu);
 
-            while (userChoice != "q" && userChoice != "Q")
+            while (userChoice != "Q")
             {
                 userChoice = UserAction();
                 
                 switch(userChoice)
                 {
                     case "1":
-                        AddString(menu);
+                        AddString(menu, ref timesModified, ref dtModified);
                         break;
                     case "2":
-                        DeleteString(menu);
+                        DeleteString(menu, ref timesModified, ref dtModified);
                         break;
-                    case "q":
                     case "Q":
-                        SaveMenu(menu);
+                        SaveMenu(menu, ref timesModified, ref dtModified);
                         break;
                     default:
                         Console.WriteLine("Incorrect input.\n");
@@ -51,7 +48,7 @@ namespace ListProject
             menu.Add("Exit");
         }*/
 
-        static void AddString(List<string> menu)
+        static void AddString(List<string> menu, ref int timesModified, ref DateTime dtModified)
         {
             Console.Write("Input menu string: ");
             string menuStr = Console.ReadLine();
@@ -61,7 +58,7 @@ namespace ListProject
             dtModified = DateTime.Now;
         }
 
-        static void DeleteString(List<string> menu)
+        static void DeleteString(List<string> menu, ref int timesModified, ref DateTime dtModified)
         {
             bool correctInput = false;
             string menuStr;
@@ -101,10 +98,10 @@ namespace ListProject
                 "q - exit\n");
             Console.Write("Make your choice: ");
 
-            return Console.ReadLine();
+            return Console.ReadLine().ToUpper();
         }
 
-        static void SaveMenu(List<string> menu)
+        static void SaveMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -132,7 +129,7 @@ namespace ListProject
             xmlOut.Close();
         }
 
-        static void LoadMenu(List<string> menu)
+        static void LoadMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
         {
             XmlReader xmlIn = XmlReader.Create(GetMenuFile());
             bool firstEncounter = true;
