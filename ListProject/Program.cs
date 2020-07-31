@@ -4,26 +4,26 @@ using System.Collections.Generic;
 namespace ListProject
 {
     class Program
-    {
-        static List<String> menu = new List<String>();
-        static string userChoice;
-
+    {       
         static void Main(string[] args)
         {
-            InitMenu();
-            PrintMenu();
+            List<String> menu = new List<String>();
+            string userChoice = null;
+            
+            InitMenu(menu);
+            PrintMenu(menu);
 
             while (userChoice != "q" && userChoice != "Q")
             {
-                UserAction();
+                userChoice = UserAction();
                 
                 switch(userChoice)
                 {
                     case "1":
-                        AddString();
+                        AddString(menu);
                         break;
                     case "2":
-                        DeleteString();
+                        DeleteString(menu);
                         break;
                     case "q":
                     case "Q":
@@ -32,24 +32,25 @@ namespace ListProject
                         Console.WriteLine("Incorrect input.\n");
                         break;
                 }
-                PrintMenu();
+                PrintMenu(menu);
             }
         }
 
-        static void InitMenu()
+        static void InitMenu(List<string> menu)
         {
             menu.Add("New");
             menu.Add("Exit");
         }
 
-        static void AddString()
+        static void AddString(List<string> menu)
         {
             Console.Write("Input menu string: ");
             string menuStr = Console.ReadLine();
             menu.Add(menuStr);
+            Console.WriteLine();
         }
 
-        static void DeleteString()
+        static void DeleteString(List<string> menu)
         {
             bool correctInput = false;
             string menuStr;
@@ -69,7 +70,7 @@ namespace ListProject
             menu.RemoveAt(Convert.ToInt32(menuStr) - 1);
         }
 
-        static void PrintMenu()
+        static void PrintMenu(List<string> menu)
         {
             Console.WriteLine("Program MENU:");
             for (int i = 0; i < menu.Count; i++)
@@ -79,13 +80,15 @@ namespace ListProject
             }
         }
 
-        static void UserAction()
-        {      
-                Console.WriteLine("\n1 - add menu string\n" +
-                    "2 - delete menu string\n" +
-                    "q - exit\n");
-                Console.Write("Make your choice: ");
-                userChoice = Console.ReadLine();
+        static string UserAction()
+        {           
+            Console.Write("\nAllowed actions: ");
+            Console.WriteLine("\n1 - add menu string\n" +
+                "2 - delete menu string\n" +
+                "q - exit\n");
+            Console.Write("Make your choice: ");
+
+            return Console.ReadLine();
         }
     }
 }
