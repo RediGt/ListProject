@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Xml;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace ListProject
 {
@@ -100,32 +103,85 @@ namespace ListProject
             return Console.ReadLine().ToUpper();
         }
 
+        /*       static void SaveMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
+               {
+                   XmlWriterSettings settings = new XmlWriterSettings();
+                   settings.Indent = true;
+
+                   XmlWriter xmlOut = XmlWriter.Create(GetMenuFile(), settings);
+
+                   xmlOut.WriteStartDocument();
+                   xmlOut.WriteComment("File for storage content menu.");
+
+                   xmlOut.WriteStartElement("Menu");
+
+                   xmlOut.WriteAttributeString("Times_Modified", Convert.ToString(timesModified));
+                   xmlOut.WriteAttributeString("Last_Modified", dtModified.ToString());
+
+                   foreach (var item in menu)
+                   {
+                       xmlOut.WriteStartElement("MenuItem");
+                       xmlOut.WriteString(item);
+                       xmlOut.WriteEndElement();
+                   }
+
+                   xmlOut.WriteEndElement();
+                   xmlOut.WriteEndDocument();
+                   xmlOut.Flush();
+                   xmlOut.Close();
+               }
+
+               static void LoadMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
+               {
+                   bool firstEncounter = true;
+
+                   try
+                   {
+                       XmlReader xmlIn = XmlReader.Create(GetMenuFile());
+                       while (xmlIn.Read())
+                       {
+                           if (xmlIn.LocalName.Equals("Menu") && firstEncounter)
+                           {
+                               string attribut;
+                               attribut = xmlIn.GetAttribute("Times_Modified");
+                               Console.WriteLine("Times modified: {0}", attribut);
+                               timesModified = Convert.ToInt32(attribut);
+
+                               attribut = xmlIn.GetAttribute("Last_Modified");
+                               Console.WriteLine("Last modified: {0}", attribut);
+                               dtModified = Convert.ToDateTime(attribut);
+
+                               Console.WriteLine();
+                               firstEncounter = false;
+                           }
+
+                           if (xmlIn.LocalName.Equals("MenuItem"))
+                           {
+                               xmlIn.Read();
+                               menu.Add(xmlIn.Value);
+                               xmlIn.Read();
+                           }
+                       }
+                       xmlIn.Close();
+                   }
+                   catch
+                   {
+                       InitMenu(menu);
+                   }
+               }*/
+       
         static void SaveMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-
-            XmlWriter xmlOut = XmlWriter.Create(GetMenuFile(), settings);
-
-            xmlOut.WriteStartDocument();
-            xmlOut.WriteComment("File for storage content menu.");
-
-            xmlOut.WriteStartElement("Menu");
-
-            xmlOut.WriteAttributeString("Times_Modified", Convert.ToString(timesModified));
-            xmlOut.WriteAttributeString("Last_Modified", dtModified.ToString());
-
-            foreach (var item in menu)
+            // serialize JSON directly to a file
+            using (StreamWriter file = File.CreateText(GetMenuFile()))
             {
-                xmlOut.WriteStartElement("MenuItem");
-                xmlOut.WriteString(item);
-                xmlOut.WriteEndElement();
-            }
-
-            xmlOut.WriteEndElement();
-            xmlOut.WriteEndDocument();
-            xmlOut.Flush();
-            xmlOut.Close();
+                JsonSerializer serializer = new JsonSerializer();
+                foreach (var item in menu)
+                {
+                    //JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(file, item);
+                }
+            }           
         }
 
         static void LoadMenu(List<string> menu, ref int timesModified, ref DateTime dtModified)
@@ -134,33 +190,19 @@ namespace ListProject
 
             try
             {
-                XmlReader xmlIn = XmlReader.Create(GetMenuFile());
-                while (xmlIn.Read())
+                // deserialize JSON directly from a file
+                using (StreamReader file = File.OpenText(GetMenuFile()))
                 {
-                    if (xmlIn.LocalName.Equals("Menu") && firstEncounter)
+                    JsonSerializer serializer = new JsonSerializer();
+                    int i = 0;
+                    foreach (var item in menu)
                     {
-                        string attribut;
-                        attribut = xmlIn.GetAttribute("Times_Modified");
-                        Console.WriteLine("Times modified: {0}", attribut);
-                        timesModified = Convert.ToInt32(attribut);
-
-                        attribut = xmlIn.GetAttribute("Last_Modified");
-                        Console.WriteLine("Last modified: {0}", attribut);
-                        dtModified = Convert.ToDateTime(attribut);
-
-                        Console.WriteLine();
-                        firstEncounter = false;
+                        //JsonSerializer serializer = new JsonSerializer();
+                        menu[i] = (List<String>)serializer.Deserialize(file, typeof(menu));
+                        i++;
                     }
-
-                    if (xmlIn.LocalName.Equals("MenuItem"))
-                    {
-                        xmlIn.Read();
-                        menu.Add(xmlIn.Value);
-                        xmlIn.Read();
-                    }
+                    //Movie movie2 = (Movie)serializer.Deserialize(file, typeof(Movie));
                 }
-                xmlIn.Close();
-            }
             catch
             {
                 InitMenu(menu);
