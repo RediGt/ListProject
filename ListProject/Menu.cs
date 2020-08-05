@@ -13,7 +13,7 @@ namespace ListProject
             LoadMenu();
         }
 
-        List<String> menu { get; set; }
+        List<String> menu { get; set; } = new List<string>();
         int timesModified { get; set; } = 0;
         DateTime dtModified { get; set; } = new DateTime();
 
