@@ -11,57 +11,11 @@ namespace ListProject
     {
         public Menu()
         {
-            //LoadMenu();
         }
 
         public List<String> menu { get; set; } = new List<string>();
         public int timesModified { get; set; } = 0;
         public DateTime dtModified { get; set; } = new DateTime();
-
-        public void LoadMenu()
-        {
-            try
-            {
-                StreamReader reader = new StreamReader(GetMenuFile());
-                String line = reader.ReadLine();
-                String json = "";
-
-                while (line != null)
-                {
-                    json += line;
-                    line = reader.ReadLine();
-                }
-                reader.Close();
-
-                this.menu = JsonConvert.DeserializeObject<List<string>>(json);
-               /* var options = new JsonSerializerOptions
-                {
-                    IgnoreNullValues = true
-                };
-                Menu newMenu = new Menu();
-                newMenu = System.Text.Json.JsonSerializer.Deserialize<Menu>(jsonString, options);*/
-            }
-            catch
-            {
-                InitMenu();
-            }
-        }
-
-        public void SaveMenu()
-        {
-            String json = JsonConvert.SerializeObject(this.menu, Newtonsoft.Json.Formatting.Indented);
-
-            try
-            {
-                StreamWriter sw = new StreamWriter(GetMenuFile());
-                sw.Write(json);
-                sw.Close();
-            }
-            catch
-            {
-                Console.WriteLine("Fail!");
-            }
-        }
 
         public void AddString()
         {
@@ -95,16 +49,10 @@ namespace ListProject
             this.dtModified = DateTime.Now;
         }
 
-        public void InitMenu()
-        {
-            this.menu.Add("New");
-            this.menu.Add("Exit");
-        }
-
         public static string GetMenuFile()
         {
             string filename = Directory.GetCurrentDirectory();
-            filename += @"\Menu1.json";
+            filename += @"\Menu2.json";
 
             return filename;
         }
@@ -112,7 +60,10 @@ namespace ListProject
         public void PrintMenu()
         {
             Console.WriteLine("MENU status:");
-            Console.WriteLine("Times modified: {0}, Last modified: {1}\n", this.timesModified, this.dtModified);
+            if (this.timesModified == 0)
+                Console.WriteLine("Created: {0}\n", this.dtModified);
+            else
+                Console.WriteLine("Times modified: {0}, Last modified: {1}\n", this.timesModified, this.dtModified);
 
             Console.WriteLine("Program MENU:");
             for (int i = 0; i < this.menu.Count; i++)

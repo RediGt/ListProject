@@ -10,27 +10,9 @@ namespace ListProject
     {
         static void Main(string[] args)
         {
-            Menu userMenu = new Menu();
-            /*userMenu.menu.Add("New");
-            userMenu.menu.Add("Load");
-            userMenu.timesModified = 1;
-            userMenu.dtModified = DateTime.Now;*/
-            
+            Menu userMenu = new Menu();           
             userMenu = LoadFromFile();
 
-            //SaveToFile(userMenu);
-
-            /*tring jsonString;
-            var options = new JsonSerializerOptions
-            {
-                IgnoreNullValues = true
-            };
-            Menu newMenu = new Menu();
-            newMenu = System.Text.Json.JsonSerializer.Deserialize<Menu>(jsonString, options);
-            Console.WriteLine(newMenu.dtModified);
-            //Console.WriteLine(newMenu.menu[2]);*/
-
-            /*Menu userMenu = new Menu();*/
             string userChoice = null;
 
             userMenu.PrintMenu();
@@ -105,11 +87,11 @@ namespace ListProject
             }
             catch
             {
-                //InitMenu();userMenu.menu.Add("New");
+                Console.WriteLine("Error loading the menu. A new menu is created.");
                 Menu userMenu = new Menu();
-                userMenu.menu.Add("Error");
-                userMenu.menu.Add("Load");
-                userMenu.timesModified = 1;
+                userMenu.menu.Add("New");
+                userMenu.menu.Add("Exit");
+                userMenu.timesModified = 0;
                 userMenu.dtModified = DateTime.Now;
                 return userMenu;
             }
