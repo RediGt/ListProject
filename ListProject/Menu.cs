@@ -52,9 +52,60 @@ namespace ListProject
         public static string GetMenuFile()
         {
             string filename = Directory.GetCurrentDirectory();
-            filename += @"\Menu2.json";
+            filename += @"\Menu.json";
 
             return filename;
+        }
+
+        public static void SaveToFile(Menu userMenu)
+        {
+            string jsonString;
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            };
+            jsonString = System.Text.Json.JsonSerializer.Serialize(userMenu, options);
+
+            Console.WriteLine(jsonString);
+            File.WriteAllText(Menu.GetMenuFile(), jsonString);
+        }
+
+        public static Menu LoadFromFile()
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(Menu.GetMenuFile());
+                String line = reader.ReadLine();
+                String json = "";
+
+                while (line != null)
+                {
+                    json += line;
+                    line = reader.ReadLine();
+                }
+                reader.Close();
+
+                var options = new JsonSerializerOptions
+                {
+                    IgnoreNullValues = true
+                };
+                return System.Text.Json.JsonSerializer.Deserialize<Menu>(json, options);
+            }
+            catch
+            {
+                Console.WriteLine("Error loading the menu. A new menu is created.");              
+                return CreateNewMenu();
+            }
+        }
+
+        public static Menu CreateNewMenu()
+        {
+            Menu userMenu = new Menu();
+            userMenu.menu.Add("New");
+            userMenu.menu.Add("Exit");
+            userMenu.timesModified = 0;
+            userMenu.dtModified = DateTime.Now;
+            return userMenu;
         }
 
         public void PrintMenu()
