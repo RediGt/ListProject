@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 
 namespace ListProject
 {
@@ -10,12 +11,12 @@ namespace ListProject
     {
         public Menu()
         {
-            LoadMenu();
+            //LoadMenu();
         }
 
-        List<String> menu { get; set; } = new List<string>();
-        int timesModified { get; set; } = 0;
-        DateTime dtModified { get; set; } = new DateTime();
+        public List<String> menu { get; set; } = new List<string>();
+        public int timesModified { get; set; } = 0;
+        public DateTime dtModified { get; set; } = new DateTime();
 
         public void LoadMenu()
         {
@@ -33,6 +34,12 @@ namespace ListProject
                 reader.Close();
 
                 this.menu = JsonConvert.DeserializeObject<List<string>>(json);
+               /* var options = new JsonSerializerOptions
+                {
+                    IgnoreNullValues = true
+                };
+                Menu newMenu = new Menu();
+                newMenu = System.Text.Json.JsonSerializer.Deserialize<Menu>(jsonString, options);*/
             }
             catch
             {
@@ -97,13 +104,16 @@ namespace ListProject
         public static string GetMenuFile()
         {
             string filename = Directory.GetCurrentDirectory();
-            filename += @"\Menu.json";
+            filename += @"\Menu1.json";
 
             return filename;
         }
 
         public void PrintMenu()
         {
+            Console.WriteLine("MENU status:");
+            Console.WriteLine("Times modified: {0}, Last modified: {1}\n", this.timesModified, this.dtModified);
+
             Console.WriteLine("Program MENU:");
             for (int i = 0; i < this.menu.Count; i++)
             {
