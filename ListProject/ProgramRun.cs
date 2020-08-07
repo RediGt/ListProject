@@ -6,12 +6,12 @@ using System.Text.Json;
 
 namespace ListProject
 {
-    class JsonMenu
+    class ProgramRun
     {
         static void Main(string[] args)
         {
             Menu userMenu = new Menu();           
-            userMenu = Menu.LoadFromFile();
+            userMenu = JsonIO.LoadFromFile();
 
             string userChoice = null;
 
@@ -30,7 +30,7 @@ namespace ListProject
                         userMenu.DeleteString();
                         break;
                     case "Q":
-                        Menu.SaveToFile(userMenu);
+                        JsonIO.SaveToFile(userMenu);
                         break;
                     default:
                         Console.WriteLine("Incorrect input.\n");
